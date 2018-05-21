@@ -13,9 +13,18 @@ console.log('Hello Noteful!');
 app.use(express.static('public'));
 
 app.get('/api/notes', function(req,res){
-    res.json(data);
-    //console.log(data)
+    if(req.query.searchTerm === undefined){
+        res.json(data)}
+    else{
+        res.json(data.filter(function(item){
+            return item.title.includes(req.query.searchTerm)
+            })
+        )
+    }
 });
+
+
+
 
 app.get('/api/notes/:id', function(req,res){
     const {id} = req.params;
