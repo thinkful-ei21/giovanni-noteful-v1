@@ -16,7 +16,7 @@ const {logger} = require('./middleware/logger')
 
 app.use(logger);
 app.use(express.static('public'));
-app.use(express.json())
+app.use(express.json());
 
 
 
@@ -29,13 +29,39 @@ app.get('/api/notes', function(req,res,next){
 });
 
 
-app.get('/api/notes/:id', function(req,res){
+app.get('/api/notes/:id', function(req, res, next){
     const {id} = req.params;
     notes.find(id, (err, item) =>{
-        console.log(item)
         return err ? next(err) : res.json(item)
     })
 });
+
+//updates a note
+app.put('/api/notes/:id', function(req, res, next){
+    
+
+    const id = req.params.id;
+
+    const updateObj = {};
+    const updateFields = ['title', 'content'];
+
+    updateFields.forEach(field =>{
+        if(field in req.body){updateObj[field] = req.body[field]}
+    });
+//    console.log(updateObj);
+    notes.update(id, updateObj, (err, item) => {
+        if (err) {
+          return next(err);
+        }
+        if (item) {
+          res.json(item);
+        } else {
+          next();
+        }
+    })
+
+});
+
 
 
 

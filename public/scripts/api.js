@@ -20,5 +20,16 @@ const api = {
       url: `/api/notes/${id}`,
       success: callback
     });
+  },
+
+  update: function (id, obj, callback){
+    $.ajax({
+      type: 'PUT',
+      dataType: 'json',
+      contentType: 'application/json',
+      url: `/api/notes/${id}`,
+      data: JSON.stringify(obj),
+      success: callback
+    })
   }
 };
