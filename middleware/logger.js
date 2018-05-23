@@ -2,7 +2,7 @@
 
 const morgan = require('morgan');
 
-const logger = morgan(':date[iso] :method :url');
+const logger = morgan('dev');
 
 
 module.exports.logger = logger
