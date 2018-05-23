@@ -28,10 +28,7 @@ router.get('/:id', function(req, res, next){
   
 //updates a note
 router.put('/:id', function(req, res, next){
-      
-  
   const id = req.params.id;
-  
   const updateObj = {};
   const updateFields = ['title', 'content'];
   
@@ -40,18 +37,35 @@ router.put('/:id', function(req, res, next){
   });
   //    console.log(updateObj);
   notes.update(id, updateObj, (err, item) => {
-    if (err) {
-      return next(err);
-    }
-    if (item) {
-      res.json(item);
-    } else {
-      next();
-    }
+    if (err) {return next(err);}
+    if (item) {res.json(item);}
+    else {next();}
   })
-  
 });
 
+router.delete('/:id', function(req,res, next){
 
+  notes.delete(req.params.id, (err, item) =>{
+    if (err){return next(err)}
+    if (item) {res.status(204).end();}
+    else {next();}
+  });
+
+});
+
+router.post('', function(req, res, next){
+  if(!req.body.title){
+    const err = new Error('missing title in request body');
+    err.status = 400;
+    next(err)
+  }
+  const newObj= {'title': req.body.title, 'content':req.body.content};
+  notes.create(newObj,(err,item) =>{
+    if (err){return next(err)};
+    if (item){res.status(201).json(item)}
+    else {next()}
+  })
+});
+    
 
 module.exports = router;
