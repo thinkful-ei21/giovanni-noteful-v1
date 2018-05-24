@@ -62,7 +62,7 @@ router.post('', function(req, res, next){
   const newObj= {'title': req.body.title, 'content':req.body.content};
   notes.create(newObj,(err,item) =>{
     if (err){return next(err)};
-    if (item){res.status(201).json(item)}
+    if (item){res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item)}
     else {next()}
   })
 });
