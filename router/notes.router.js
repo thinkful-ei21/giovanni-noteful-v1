@@ -12,18 +12,28 @@ const notes = simDB.initialize(data);
 
 router.get('', function(req,res,next){
   const searchTerm = req.query.searchTerm;
-  
-  notes.filter(searchTerm, (err, list) =>{
-    return err ? next(err) : res.json(list)
-  })
+  notes.filter(searchTerm)
+    .then(list => res.json(list))
+    .catch(next)  
+  // notes.filter(searchTerm, (err, list) =>{
+  //   return err ? next(err) : res.json(list)
+  // })
 });
   
   
 router.get('/:id', function(req, res, next){
   const {id} = req.params;
-  notes.find(id, (err, item) =>{
-    return err ? next(err) : res.json(item)
-  })
+  notes.find(id)
+  //   .then(item =>{
+  //     if(item){res.json(item)}
+  //     else{next()}
+  //   })
+  //   .catch(err => {
+  //     next(err)
+  //   })
+
+    .then(item =>  item ? res.json(item) : next() )
+    .catch(next);
 });
   
 //updates a note
@@ -35,21 +45,27 @@ router.put('/:id', function(req, res, next){
   updateFields.forEach(field =>{
     if(field in req.body){updateObj[field] = req.body[field]}
   });
-  //    console.log(updateObj);
-  notes.update(id, updateObj, (err, item) => {
-    if (err) {return next(err);}
-    if (item) {res.json(item);}
-    else {next();}
-  })
+  notes.update(id, updateObj)
+    .then(item => res.json(item))
+    .catch(next);
+
+  // notes.update(id, updateObj, (err, item) => {
+  //   if (err) {return next(err);}
+  //   if (item) {res.json(item);}
+  //   else {next();}
+  // })
 });
 
 router.delete('/:id', function(req,res, next){
+  notes.delete(req.params.id)
+    .then(res.status(204).end())
+    .catch(next);
 
-  notes.delete(req.params.id, (err, item) =>{
-    if (err){return next(err)}
-    if (item) {res.status(204).end();}
-    else {next();}
-  });
+  // notes.delete(req.params.id, (err, item) =>{
+  //   if (err){return next(err)}
+  //   if (item) {res.status(204).end();}
+  //   else {next();}
+  // });
 
 });
 
@@ -60,11 +76,16 @@ router.post('', function(req, res, next){
     next(err)
   }
   const newObj= {'title': req.body.title, 'content':req.body.content};
-  notes.create(newObj,(err,item) =>{
-    if (err){return next(err)};
-    if (item){res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item)}
-    else {next()}
-  })
+
+  notes.create(newObj)
+    .then(item => res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item))
+    .catch(next);
+
+  // notes.create(newObj,(err,item) =>{
+  //   if (err){return next(err)};
+  //   if (item){res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item)}
+  //   else {next()}
+  // })
 });
     
 
