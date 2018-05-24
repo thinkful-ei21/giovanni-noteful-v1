@@ -9,9 +9,4 @@ $(document).ready(function () {
       store.notes = response;
       noteful.render();
     });
-  // api.search({}, response => {
-  //   store.notes = response;
-  //   noteful.render();
-  // });
-
 });

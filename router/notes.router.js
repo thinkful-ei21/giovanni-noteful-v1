@@ -15,22 +15,14 @@ router.get('', function(req,res,next){
   notes.filter(searchTerm)
     .then(list => res.json(list))
     .catch(next)  
-  // notes.filter(searchTerm, (err, list) =>{
-  //   return err ? next(err) : res.json(list)
-  // })
+
 });
   
   
 router.get('/:id', function(req, res, next){
   const {id} = req.params;
   notes.find(id)
-  //   .then(item =>{
-  //     if(item){res.json(item)}
-  //     else{next()}
-  //   })
-  //   .catch(err => {
-  //     next(err)
-  //   })
+
 
     .then(item =>  item ? res.json(item) : next() )
     .catch(next);
@@ -49,23 +41,12 @@ router.put('/:id', function(req, res, next){
     .then(item => res.json(item))
     .catch(next);
 
-  // notes.update(id, updateObj, (err, item) => {
-  //   if (err) {return next(err);}
-  //   if (item) {res.json(item);}
-  //   else {next();}
-  // })
 });
 
 router.delete('/:id', function(req,res, next){
   notes.delete(req.params.id)
     .then(res.status(204).end())
     .catch(next);
-
-  // notes.delete(req.params.id, (err, item) =>{
-  //   if (err){return next(err)}
-  //   if (item) {res.status(204).end();}
-  //   else {next();}
-  // });
 
 });
 
@@ -81,11 +62,6 @@ router.post('', function(req, res, next){
     .then(item => res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item))
     .catch(next);
 
-  // notes.create(newObj,(err,item) =>{
-  //   if (err){return next(err)};
-  //   if (item){res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item)}
-  //   else {next()}
-  // })
 });
     
 
