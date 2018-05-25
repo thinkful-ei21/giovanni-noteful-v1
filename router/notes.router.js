@@ -14,7 +14,7 @@ router.get('', function(req,res,next){
   const searchTerm = req.query.searchTerm;
   notes.filter(searchTerm)
     .then(list => res.json(list))
-    .catch(next)  
+    .catch(next);  
 
 });
   
@@ -35,7 +35,7 @@ router.put('/:id', function(req, res, next){
   const updateFields = ['title', 'content'];
   
   updateFields.forEach(field =>{
-    if(field in req.body){updateObj[field] = req.body[field]}
+    if(field in req.body){updateObj[field] = req.body[field];}
   });
   notes.update(id, updateObj)
     .then(item => res.json(item))
@@ -54,7 +54,7 @@ router.post('', function(req, res, next){
   if(!req.body.title){
     const err = new Error('missing title in request body');
     err.status = 400;
-    next(err)
+    next(err);
   }
   const newObj= {'title': req.body.title, 'content':req.body.content};
 

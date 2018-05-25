@@ -102,7 +102,7 @@ const noteful = (function () {
           .then(() => api.search(store.currentSearchTerm))
           .then(response =>{
             store.notes= response;
-            render()
+            render();
           });
       }
 
