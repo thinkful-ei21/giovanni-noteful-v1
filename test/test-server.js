@@ -125,8 +125,7 @@ describe('requests to /api/notes...', function(){
       })
       .then(function(res){
         expect(res).to.have.status(200);
-        expect(res.body[0].content).to.equal('find this note');
-        
+        expect(res.body[0].content).to.equal('find this note');        
       });
   });
 
