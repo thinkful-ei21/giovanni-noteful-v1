@@ -52,21 +52,17 @@ describe('requests to /api/notes...', function(){
       });
   });
 
-  //   it('GET to .../ with search query should return a subset of notes', function(){
-
-  //   });
-
   it('GET to .../[ID] should respond with a note object', function(){
 
     return chai.request(app)
       .get('/api/notes')
       .then(function(res){
         return chai.request(app)
-          .get(`/api/notes/${res.body[0].id}`)
+          .get(`/api/notes/${res.body[0].id}`);
       })
       .then(function(res){
         expect(res.body).to.be.a('object');
-        expect(res.body).to.have.keys(['id','title','content'])
+        expect(res.body).to.have.keys(['id','title','content']);
       });
   });
 
@@ -92,17 +88,84 @@ describe('requests to /api/notes...', function(){
       });
   });
 
-  it('POST to .../ should return an error if no title is provided', function(){
+  it('POST to .../ should return an error if no title is provided, and should not create object', function(){
 
     return chai.request(app)
       .post('/api/notes')
-      .send({content: 'this doesn\'t matter at all'})
+      .send({content: 'this should\'t get added'})
+      .then(function(res){
+        expect(res).to.have.status(400);
+        return chai.request(app)
+          .get('/api/notes/')
+          .query({searchTerm: 'this should\'t get added'})
+      })
+      .then(function(res){
+        expect(res.body.length).to.equal(0);
+      });
+  });
+
+
+
+  it('GET to .../ with search query should return a subset of notes', function(){
+
+    const uniqueString = '134pud918398yf139oivjadsfyprtapfodig09';
+    return chai.request(app)
+      .get('/api/notes/')
+      .query({searchTerm: `${uniqueString}`})
+      .then(function(res){
+        expect(res.body.length).to.equal(0);
+        return chai.request(app)
+          .post('/api/notes')
+          .send({title: `${uniqueString}`, content: 'find this note'})
+      })
+      .then(function(){
+        return chai.request(app)
+          .get('/api/notes/')
+          .query({searchTerm: `${uniqueString}`});
+      })
+      .then(function(res){
+        expect(res).to.have.status(200);
+        expect(res.body[0].content).to.equal('find this note');
+        
+      });
+  });
+
+
+
+  it('PUT to /[ID] should edit a note', function(){
+    
+    let objId;
+    return chai.request(app)
+      .get('/api/notes')
+      .then(function(res){
+        objId = res.body[0].id;
+
+        return chai.request(app)
+          .put(`/api/notes/${objId}`)       
+          .send({content: 'new note content'})
+      })
+      .then(function(res){
+        expect(res).to.have.status(200);
+        expect(res.body.content).to.equal('new note content');
+
+        return chai.request(app)
+          .get(`/api/notes/${objId}`);
+      })
+      .then(function(res){
+        expect(res.body.content).to.equal('new note content');
+      });
+
+  });
+
+  it('PUT to /[BADID] should return Error', function(){
+
+    return chai.request(app)
+      .put('/api/notes/thisIsNotAGoodIdString')
+      .send({content: 'this does not matter'})
       .then(function(res){
         expect(res).to.have.status(400);
       });
   });
-
-  // it('PUT to /[ID] should edit a note')
 
   // it('DELETE to /[ID] should delete a note')
 

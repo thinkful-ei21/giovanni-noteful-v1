@@ -38,7 +38,11 @@ router.put('/:id', function(req, res, next){
     if(field in req.body){updateObj[field] = req.body[field];}
   });
   notes.update(id, updateObj)
-    .then(item => res.json(item))
+    .then( function(item){
+      if(item === null){res.status(400).send('no matching ID')}
+      else{
+        res.json(item);  
+      }})
     .catch(next);
 
 });
@@ -56,12 +60,12 @@ router.post('', function(req, res, next){
     err.status = 400;
     next(err);
   }
-  const newObj= {'title': req.body.title, 'content':req.body.content};
+  else{const newObj= {'title': req.body.title, 'content':req.body.content};
 
-  notes.create(newObj)
-    .then(item => res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item))
-    .catch(next);
-
+    notes.create(newObj)
+      .then(item => res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item))
+      .catch(next);
+  }
 });
     
 
