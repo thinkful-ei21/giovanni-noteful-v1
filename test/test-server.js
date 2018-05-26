@@ -166,8 +166,25 @@ describe('requests to /api/notes...', function(){
       });
   });
 
-  // it('DELETE to /[ID] should delete a note')
+  it('DELETE to /[ID] should delete a note', function(){
 
+    let objId;
+    return chai.request(app)
+      .get('/api/notes')
+      .then(function(res){
+        objId = res.body[0].id;
+        return chai.request(app)
+        .delete(`/api/notes/${objId}`)
+      })
+      .then(function(res){
+        expect(res).to.have.status(204);
+        return chai.request(app)
+          .get(`/api/notes/${objId}`)
+      })
+      .then(function(res){
+        expect(res).to.have.status(404);
+      });
+  });
 });
 
 
