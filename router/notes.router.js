@@ -39,7 +39,7 @@ router.put('/:id', function(req, res, next){
   });
   notes.update(id, updateObj)
     .then( function(item){
-      if(item === null){res.status(400).send('no matching ID')}
+      if(item === null){res.status(400).send('no matching ID');}
       else{
         res.json(item);  
       }})

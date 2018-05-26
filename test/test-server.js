@@ -97,7 +97,7 @@ describe('requests to /api/notes...', function(){
         expect(res).to.have.status(400);
         return chai.request(app)
           .get('/api/notes/')
-          .query({searchTerm: 'this should\'t get added'})
+          .query({searchTerm: 'this should\'t get added'});
       })
       .then(function(res){
         expect(res.body.length).to.equal(0);
@@ -116,7 +116,7 @@ describe('requests to /api/notes...', function(){
         expect(res.body.length).to.equal(0);
         return chai.request(app)
           .post('/api/notes')
-          .send({title: `${uniqueString}`, content: 'find this note'})
+          .send({title: `${uniqueString}`, content: 'find this note'});
       })
       .then(function(){
         return chai.request(app)
@@ -142,7 +142,7 @@ describe('requests to /api/notes...', function(){
 
         return chai.request(app)
           .put(`/api/notes/${objId}`)       
-          .send({content: 'new note content'})
+          .send({content: 'new note content'});
       })
       .then(function(res){
         expect(res).to.have.status(200);
